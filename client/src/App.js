@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import styled, { ThemeProvider } from "styled-components";
 import { darkTheme, lightTheme } from "./utils/Theme/Theme";
@@ -20,7 +20,39 @@ const Wrapper = styled.div`
 `;
 
 function App() {
+  const cookie = getCookie("darkMode") === "true" ? true : false;
+
   const [darkMode, setDarkMode] = useState(true);
+
+  useEffect(() => {
+    setCookie("darkMode", darkMode, 7);
+  }, [darkMode]);
+
+  useEffect(() => {
+    setDarkMode(cookie);
+  }, []);
+  function setCookie(cname, cvalue, exdays) {
+    const d = new Date();
+    d.setTime(d.getTime() + exdays * 24 * 60 * 60 * 1000);
+    let expires = "expires=" + d.toUTCString();
+    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+  }
+
+  function getCookie(cname) {
+    let name = cname + "=";
+    let decodedCookie = decodeURIComponent(document.cookie);
+    let ca = decodedCookie.split(";");
+    for (let i = 0; i < ca.length; i++) {
+      let c = ca[i];
+      while (c.charAt(0) === " ") {
+        c = c.substring(1);
+      }
+      if (c.indexOf(name) === 0) {
+        return c.substring(name.length, c.length);
+      }
+    }
+    return "";
+  }
 
   return (
     <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
