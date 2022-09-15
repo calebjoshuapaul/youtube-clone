@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import Card from "../../components/Card/Card";
 import Comments from "../../components/Comments/Comments";
 import ThumbUpOffAltOutlinedIcon from "@mui/icons-material/ThumbUpOffAltOutlined";
 import ThumbDownOffAltOutlinedIcon from "@mui/icons-material/ThumbDownOffAltOutlined";
@@ -14,7 +15,9 @@ const Content = styled.div`
   flex: 5;
 `;
 
-const VideoWrapper = styled.div``;
+const VideoWrapper = styled.div`
+  height: 30vw;
+`;
 
 const Title = styled.h1`
   font-size: 18px;
@@ -108,7 +111,7 @@ function Video() {
         <VideoWrapper style={{ objectFit: "cover" }}>
           <iframe
             width="100%"
-            height="510"
+            height="100%"
             src="https://www.youtube.com/embed/k3Vfj-e1Ma4"
             title="Youtube video player"
             frameBorder="0"
@@ -152,7 +155,18 @@ function Video() {
         <Hr />
         <Comments />
       </Content>
-      <Recommendation>Recommendation</Recommendation>
+      <Recommendation>
+        <Card type="sm" />
+        <Card type="sm" />
+        <Card type="sm" />
+        <Card type="sm" />
+        <Card type="sm" />
+        <Card type="sm" />
+        <Card type="sm" />
+        <Card type="sm" />
+        <Card type="sm" />
+        <Card type="sm" />
+      </Recommendation>
     </Container>
   );
 }
