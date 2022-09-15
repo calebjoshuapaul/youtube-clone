@@ -18,6 +18,7 @@ import LightModeIcon from "@mui/icons-material/LightMode";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 
 const Container = styled.div`
   flex: 1;
@@ -79,14 +80,16 @@ const Button = styled.div`
   gap: 5;
 `;
 
-function Menu({ setDarkMode }) {
+function Menu({ darkMode, setDarkMode }) {
   return (
     <Container>
       <Wrapper>
-        <Logo>
-          <Img src={YouTubeLogo} />
-          SupTube
-        </Logo>
+        <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
+          <Logo>
+            <Img src={YouTubeLogo} />
+            SupTube
+          </Logo>
+        </Link>
         <Item>
           <HomeIcon />
           Home
@@ -160,7 +163,7 @@ function Menu({ setDarkMode }) {
           }}
         >
           <LightModeIcon />
-          Light Mode
+          {!darkMode ? "Dark" : "Light"} Mode
         </Item>
       </Wrapper>
     </Container>
