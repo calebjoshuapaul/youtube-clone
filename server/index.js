@@ -8,7 +8,7 @@ import videosRoutes from "./routes/videos.js";
 import commentsRoutes from "./routes/comments.js";
 
 const app = express();
-dotenv.config();
+dotenv.config({ path: "./vars/.env" });
 
 const connect = () => {
   mongoose
