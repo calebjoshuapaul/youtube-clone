@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const VideoSchema = new mongoose.Schema(
   {
     userId: {
-      type: Number,
+      type: String,
       required: true,
     },
     title: {
@@ -12,7 +12,7 @@ const VideoSchema = new mongoose.Schema(
     },
     desc: {
       type: String,
-      required: false,
+      required: true,
     },
     imgUrl: {
       type: String,
