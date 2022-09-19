@@ -1,9 +1,19 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Card from "../../components/Card/Card";
 import Comments from "../../components/Comments/Comments";
+import ThumbUpIcon from "@mui/icons-material/ThumbUp";
+import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 import ThumbUpOffAltOutlinedIcon from "@mui/icons-material/ThumbUpOffAltOutlined";
 import ThumbDownOffAltOutlinedIcon from "@mui/icons-material/ThumbDownOffAltOutlined";
+import { useDispatch, useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
+import {
+  fetchFailure,
+  fetchStart,
+  fetchSuccess,
+} from "../../redux/Slice/videoSlice";
+import { format } from "timeago.js";
 
 const Container = styled.div`
   display: flex;
@@ -105,6 +115,42 @@ const Subscribe = styled.button`
 `;
 
 function Video() {
+  const [channel, setChannel] = useState({});
+  const { currentUser } = useSelector((state) => state.user);
+  const { currentVideo } = useSelector((state) => state.video);
+  const dispatch = useDispatch();
+
+  const path = useLocation().pathname.split("/")[2];
+
+  useEffect(() => {
+    try {
+      (async () => {
+        dispatch(fetchStart());
+        const videoData = await fetch(`/videos/find/${path}`)
+          .then((res) => res.json())
+          .then((data) => dispatch(fetchSuccess(data)));
+
+        fetch(`/users/find/${videoData.userId}`)
+          .then((res) => res.json())
+          .then((data) => setChannel(data));
+      })();
+    } catch (error) {
+      dispatch(fetchFailure());
+    }
+  }, [path, dispatch]);
+
+  const handleLike = async () => {
+    await fetch(`users/like/${currentVideo._id}`, {
+      method: "PUT",
+    });
+  };
+
+  const handleDislike = async () => {
+    await fetch(`users/dislike/${currentVideo._id}`, {
+      method: "PUT",
+    });
+  };
+
   return (
     <Container>
       <Content>
@@ -119,35 +165,38 @@ function Video() {
             allowFullScreen
           />
         </VideoWrapper>
-        <Title>Test video</Title>
+        <Title>{currentVideo.title}</Title>
         <Details>
-          <Info>151,262 Views &#8226; 30days ago</Info>
+          <Info>
+            {currentVideo.views} Views &#8226; {format(currentVideo.createdAt)}
+          </Info>
           <Buttons>
-            <Button>
-              <ThumbUpOffAltOutlinedIcon />
-              123
+            <Button onClick={handleLike}>
+              {currentVideo.likes?.includes(currentUser._id) ? (
+                <ThumbUpIcon />
+              ) : (
+                <ThumbUpOffAltOutlinedIcon />
+              )}
+              {currentVideo.likes?.length}
             </Button>
-            <Button>
-              <ThumbDownOffAltOutlinedIcon /> Dislike
+            <Button onClick={handleDislike}>
+              {currentVideo.dislikes?.includes(currentUser._id) ? (
+                <ThumbDownIcon />
+              ) : (
+                <ThumbDownOffAltOutlinedIcon />
+              )}
+              Dislike
             </Button>
           </Buttons>
         </Details>
         <Hr />
         <Channel>
           <ChannelInfo>
-            <Image src="https://picsum.photos/50" />
+            <Image src={channel.img} />
             <ChannelDetail>
-              <ChannelName>Sup supper</ChannelName>
-              <ChannelCounter>200k subscribers</ChannelCounter>
-              <Description>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-                enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-                in reprehenderit in voluptate velit esse cillum dolore eu fugiat
-                nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-                sunt in culpa qui officia deserunt mollit anim id est laborum.
-              </Description>
+              <ChannelName>{channel.name}</ChannelName>
+              <ChannelCounter>{channel.subscribers} subscribers</ChannelCounter>
+              <Description>{currentVideo.description}</Description>
             </ChannelDetail>
           </ChannelInfo>
           <Subscribe>Subscribe</Subscribe>
@@ -155,7 +204,7 @@ function Video() {
         <Hr />
         <Comments />
       </Content>
-      <Recommendation>
+      {/* <Recommendation>
         <Card type="sm" />
         <Card type="sm" />
         <Card type="sm" />
@@ -166,7 +215,7 @@ function Video() {
         <Card type="sm" />
         <Card type="sm" />
         <Card type="sm" />
-      </Recommendation>
+      </Recommendation> */}
     </Container>
   );
 }

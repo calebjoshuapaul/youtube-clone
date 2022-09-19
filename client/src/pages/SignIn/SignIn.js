@@ -1,4 +1,10 @@
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import {
+  loginFailure,
+  loginStart,
+  loginSuccess,
+} from "../../redux/Slice/userSlice";
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -67,21 +73,27 @@ const SignIn = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const dispatch = useDispatch();
 
   const handleSignIn = async (e) => {
     e.preventDefault();
-    fetch("/auth/signin/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        name: name,
-        password: password,
-      }),
-    })
-      .then((res) => res.json())
-      .then((data) => console.log(data));
+    dispatch(loginStart());
+    try {
+      fetch("/auth/signin/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: name,
+          password: password,
+        }),
+      })
+        .then((res) => res.json())
+        .then((data) => dispatch(loginSuccess(data)));
+    } catch (error) {
+      dispatch(loginFailure());
+    }
   };
 
   const handleSignUp = async (e) => {

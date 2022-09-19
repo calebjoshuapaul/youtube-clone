@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 
@@ -53,6 +54,8 @@ const Button = styled.div`
 `;
 
 function Navbar() {
+  const { currentUser } = useSelector((state) => state.user);
+
   return (
     <Container>
       <Wrapper>
@@ -63,7 +66,7 @@ function Navbar() {
         <Link to="sign-in">
           <Button>
             <AccountCircleOutlinedIcon />
-            SIGN IN
+            {currentUser ? currentUser.name : "SIGN IN"}
           </Button>
         </Link>
       </Wrapper>
