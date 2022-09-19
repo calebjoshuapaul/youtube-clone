@@ -31,6 +31,7 @@ function App() {
   useEffect(() => {
     setDarkMode(cookie);
   }, []);
+
   function setCookie(cname, cvalue, exdays) {
     const d = new Date();
     d.setTime(d.getTime() + exdays * 24 * 60 * 60 * 1000);
@@ -64,7 +65,9 @@ function App() {
             <Wrapper>
               <Routes>
                 <Route path="/">
-                  <Route index element={<Home />} />
+                  <Route index element={<Home type={"random"} />} />
+                  <Route path="trending" element={<Home type={"trend"} />} />
+                  <Route path="subscriptions" element={<Home type={"sub"} />} />
                   <Route path="sign-in" element={<SignIn />} />
                   <Route path="video">
                     <Route path=":id" element={<Video />} />

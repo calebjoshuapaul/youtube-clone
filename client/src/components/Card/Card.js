@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { format } from "timeago.js";
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -53,17 +54,29 @@ const Info = styled.div`
   color: ${({ theme }) => theme.textSoft};
 `;
 
-function Card({ type }) {
+function Card({ type, video }) {
+  const [user, setUser] = useState({});
+
+  useEffect(() => {
+    (async () => {
+      fetch(`/users/find/${video.userId}`)
+        .then((res) => res.json())
+        .then((data) => setUser(data));
+    })();
+  }, [video.userId]);
+
   return (
     <Link to="/video/test" style={{ textDecoration: "none" }}>
       <Container type={type}>
-        <Image type={type} src="https://picsum.photos/200" />
+        <Image type={type} src={video.imgUrl} />
         <Details type={type}>
-          <ChannelImage type={type} src="https://picsum.photos/200" />
+          <ChannelImage type={type} src={user.img} />
           <Texts>
-            <Title>Test video</Title>
-            <ChannelName>Sup supper</ChannelName>
-            <Info>151,262 Views &#8226; 30days ago</Info>
+            <Title>{video.title}</Title>
+            <ChannelName>{user.name}</ChannelName>
+            <Info>
+              {video.views} Views &#8226; {format(video.createdAt)}
+            </Info>
           </Texts>
         </Details>
       </Container>

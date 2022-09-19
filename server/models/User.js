@@ -25,6 +25,7 @@ const UserSchema = new mongoose.Schema(
     },
     subscribedUsers: {
       type: [String],
+      unique: true,
     },
   },
   { timestamps: true }
